@@ -1,3 +1,10 @@
 .idea
 server/socket/
 vendor
+cgi-bin
+document_errors
+logs
+private
+public_html
+public_shtml
+stats
