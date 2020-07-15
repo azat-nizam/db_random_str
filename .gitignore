@@ -8,3 +8,6 @@ private
 public_html
 public_shtml
 stats
+config
+Capfile
+config.yml

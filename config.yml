@@ -1,6 +1,0 @@
-db:
-    driver: pgsql
-    host: localhost
-    dbname: otus_otus
-    username: otus_otus
-    password: A8AgTg153L

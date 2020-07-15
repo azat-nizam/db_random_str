@@ -8,9 +8,9 @@ services:
             - 5432:5432
         restart: always
         environment:
-            POSTGRES_DB: otus
-            POSTGRES_USER: otus
-            POSTGRES_PASSWORD: otus
+            POSTGRES_DB: otus_otus
+            POSTGRES_USER: otus_otus
+            POSTGRES_PASSWORD: A8AgTg153L
 
     web:
         image: nginx:1.17

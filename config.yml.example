@@ -1,0 +1,6 @@
+db:
+    driver: pgsql
+    host: db
+    dbname: dbname
+    username: user
+    password: pass
