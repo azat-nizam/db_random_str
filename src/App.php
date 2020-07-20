@@ -42,7 +42,7 @@ final class App
     {
         // map homepage
         $this->router->map('GET', '/', function () {
-            print 'Homework #17';
+            print 'App: db_random_string';
         });
 
         $this->router->map('GET', '/init', function () {

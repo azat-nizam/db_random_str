@@ -4,6 +4,7 @@ vendor
 cgi-bin
 document_errors
 logs
+log
 private
 public_html
 public_shtml
