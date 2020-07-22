@@ -250,15 +250,15 @@ class AttributeValue {
 
     /**
      * @param \PDO $pdo
-     * @return \DS\Vector
+     * @return \Ds\Vector
      */
-    public static function getList(\PDO $pdo): \DS\Vector
+    public static function getList(\PDO $pdo): \Ds\Vector
     {
         $selectStmt = $pdo->prepare(self::$selectListQuery);
         $selectStmt->setFetchMode(\PDO::FETCH_OBJ);
         $selectStmt->execute();
 
-        $result = new \DS\Vector();
+        $result = new \Ds\Vector();
 
         while ($record = $selectStmt->fetch()) {
             $collectionItem = new self($pdo);
