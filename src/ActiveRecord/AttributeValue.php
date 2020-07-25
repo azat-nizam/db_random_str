@@ -147,7 +147,7 @@ class AttributeValue {
     /**
      * @return string
      */
-    public function getValText(): string
+    public function getValText(): ?string
     {
         return $this->valText;
     }
@@ -165,7 +165,7 @@ class AttributeValue {
     /**
      * @return float
      */
-    public function getValNumeric(): float
+    public function getValNumeric(): ?float
     {
         return $this->valNumeric;
     }
@@ -183,7 +183,7 @@ class AttributeValue {
     /**
      * @return bool
      */
-    public function getValBool(): bool
+    public function getValBool(): ?bool
     {
         return $this->valBool;
     }
@@ -201,7 +201,7 @@ class AttributeValue {
     /**
      * @return string
      */
-    public function getValDate(): string
+    public function getValDate(): ?string
     {
         return $this->valDate;
     }

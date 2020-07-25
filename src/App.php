@@ -9,10 +9,16 @@ final class App
     private $config;
     private $router;
     private $pdo;
+    private $response;
+
+    private const INIT_ROW_COUNTS = 2;
 
     public function __construct()
     {
         $this->config = Yaml::parseFile(dirname(__DIR__) . '/config.yml');
+        $this->response = new \stdClass();
+        $this->response->error = [];
+        $this->response->payload = [];
 
         $this->router = new \AltoRouter();
         $this->mapRoutes();
@@ -34,7 +40,21 @@ final class App
             call_user_func_array($match['target'], $match['params']);
         } else {
             // no route was matched
-            header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
+            $this->addResponseError('Incorrect request');
+            $this->showResponse();
+        }
+    }
+
+    /**
+     * In console mode is used
+     * @param string $migration
+     */
+    public function migrate(string $migration = 'init'): void
+    {
+        // refresh DB
+        if ($migration == 'init') {
+            $this->initDB();
+            AttributeValue::addRandomRows($this->pdo, self::INIT_ROW_COUNTS);
         }
     }
 
@@ -42,22 +62,40 @@ final class App
     {
         // map homepage
         $this->router->map('GET', '/', function () {
-            print 'App db_random_string';
+            $this->addResponsePayload('App db_random_string');
+
+            $this->showResponse();
         });
 
         $this->router->map('GET', '/init', function () {
-
             if ($this->initDB()) {
-                print 'DB initialization successful';
+                $this->addResponsePayload('DB initialization successful');
             } else {
-                print 'DB initialization error';
+                $this->addResponseError('DB initialization error');
             }
 
+            $this->showResponse();
         });
 
         $this->router->map('GET', '/list', function () {
            $list = AttributeValue::getList($this->pdo);
-           var_dump($list);
+           $result = [];
+
+           foreach ($list as $dbItem) {
+               $result[] = [
+                   'id' => $dbItem->getId(),
+                   'attribute_id' => $dbItem->getAttributeId(),
+                   'film_id' => $dbItem->getFilmId(),
+                   'val_text' => $dbItem->getValText(),
+                   'val_numeric' => $dbItem->getValNumeric(),
+                   'val_bool' => $dbItem->getValBool(),
+                   'val_date' => $dbItem->getValDate(),
+               ];
+           }
+
+           $this->addResponsePayload($result);
+
+           $this->showResponse();
         });
 
         // Sync method to add new rows
@@ -65,10 +103,12 @@ final class App
             $result = AttributeValue::addRandomRows($this->pdo, $count);
 
             if ($result === true) {
-                print "Request to add $count rows executed";
+                $this->addResponsePayload("Request to add $count rows executed");
             } else {
-                print 'Error is occurred during attempt to add new rows';
+                $this->addResponseError('Error is occurred during attempt to add new rows');
             }
+
+            $this->showResponse();
         });
 
     }
@@ -86,5 +126,21 @@ final class App
         }
 
         return true;
+    }
+
+    private function addResponsePayload($payload)
+    {
+        $this->response->payload[] = $payload;
+    }
+
+    private function addResponseError($error)
+    {
+        $this->response->error[] = $error;
+    }
+
+    private function showResponse(): void
+    {
+        header("Content-Type: application/json; charset=UTF-8");
+        print json_encode($this->response);
     }
 }
